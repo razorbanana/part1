@@ -1,5 +1,15 @@
 import { useState } from 'react'
 
+const Anecdote = ({header,anecdotes,vote,selected}) => {
+  return(
+    <>
+    <h1>{header}</h1>
+    <div>{anecdotes[selected]}</div>
+    <div>has {vote[selected]} votes</div>
+    </>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -11,7 +21,7 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.'
   ]
   
-  const nextAnecdote = (selected) => {
+  const nextAnecdote = () => {
     let number = Math.floor(Math.random() * 7)
     if (selected !== number){
       return number
@@ -20,12 +30,25 @@ const App = () => {
     }
   }
 
+  const Vote = () => {
+    const copy = { ...vote}
+    copy[selected] += 1
+    if (copy[selected] > copy[best]){
+      setBest(selected)
+    }
+    setVote(copy)
+  }
+
+  const [best, setBest] = useState(0)
+  const [vote, setVote] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4:0, 5:0, 6:0 })
   const [selected, setSelected] = useState(0)
 
   return (
     <div>
-      <div>{anecdotes[selected]}</div>
-      <button onClick = {() => setSelected(nextAnecdote(selected))}>next anecdote</button>
+      <Anecdote header = "Anecdote of the day" anecdotes={anecdotes} vote = {vote} selected = {selected}/>
+      <button onClick = {() => Vote()}>vote</button>
+      <button onClick = {() => setSelected(nextAnecdote())}>next anecdote</button>
+      <Anecdote header = "Anecdote with most votes" anecdotes={anecdotes} vote = {vote} selected = {best}/>
     </div>
     
   )
